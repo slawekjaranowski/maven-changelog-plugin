@@ -35,7 +35,6 @@ under the License.
           <offline>false</offline>
           <connectionType>no-connection</connectionType>
           <project implementation="org.apache.maven.plugins.changelog.stubs.MavenProjectStub"/>
-          <settings implementation="org.apache.maven.plugins.changelog.stubs.SettingsStub"/>
         </configuration>
       </plugin>
     </plugins>

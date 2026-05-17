@@ -233,12 +233,6 @@ under the License.
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <groupId>org.apache.maven.doxia</groupId>
-      <artifactId>doxia-decoration-model</artifactId>
-      <version>${doxiaVersion}</version>
-      <scope>test</scope>
-    </dependency>
 
     <!-- scm -->
     <dependency>
@@ -298,11 +292,6 @@ under the License.
     <dependency>
       <groupId>org.eclipse.sisu</groupId>
       <artifactId>org.eclipse.sisu.plexus</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-xml</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
