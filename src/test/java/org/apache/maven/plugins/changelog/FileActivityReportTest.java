@@ -20,15 +20,13 @@ package org.apache.maven.plugins.changelog;
 
 import java.io.File;
 
-import org.apache.maven.plugins.changelog.stubs.ScmManagerStub;
-import org.apache.maven.scm.manager.ScmManager;
+import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author Edwin Punzalan
  */
-public class FileActivityReportTest extends AbstractChangeLogReportTest {
-    private ScmManager scmManager = new ScmManagerStub();
+public class FileActivityReportTest extends AbstractMojoTestCase {
 
     public void testNoSource() throws Exception {
         File pluginXmlFile =
@@ -38,15 +36,11 @@ public class FileActivityReportTest extends AbstractChangeLogReportTest {
 
         assertNotNull("Mojo found.", mojo);
 
-        this.setVariableValueToObject(mojo, "manager", scmManager);
-
         mojo.execute();
 
         File outputDir = (File) getVariableValueFromObject(mojo, "outputDirectory");
 
         File outputHtml = new File(outputDir, "file-activity.html");
-
-        renderer(mojo, outputHtml);
 
         assertTrue(outputHtml.getAbsolutePath() + " not generated!", outputHtml.exists());
 
@@ -59,27 +53,21 @@ public class FileActivityReportTest extends AbstractChangeLogReportTest {
         // force reuse of existing changelog cache
         outputXML.setLastModified(System.currentTimeMillis());
 
-        executeMojo("min-plugin-config.xml");
-    }
-
-    private void executeMojo(String pluginXml) throws Exception {
-        File pluginXmlFile = new File(getBasedir(), "src/test/plugin-configs/file-activity/" + pluginXml);
+        File pluginXmlFile = new File(getBasedir(), "src/test/plugin-configs/file-activity/min-plugin-config.xml");
 
         FileActivityReport mojo = (FileActivityReport) lookupMojo("file-activity", pluginXmlFile);
 
         assertNotNull("Mojo found.", mojo);
 
-        this.setVariableValueToObject(mojo, "manager", scmManager);
-
         mojo.execute();
 
-        File outputXML = (File) getVariableValueFromObject(mojo, "outputXML");
+        File outputXML1 = (File) getVariableValueFromObject(mojo, "outputXML");
 
         String encoding = (String) getVariableValueFromObject(mojo, "outputEncoding");
 
-        assertTrue("Test if changelog.xml is created", outputXML.exists());
+        assertTrue("Test if changelog.xml is created", outputXML1.exists());
 
-        String changelogXml = FileUtils.fileRead(outputXML);
+        String changelogXml = FileUtils.fileRead(outputXML1);
 
         assertTrue(
                 "Test for xml header",
@@ -90,8 +78,6 @@ public class FileActivityReportTest extends AbstractChangeLogReportTest {
         File outputDir = (File) getVariableValueFromObject(mojo, "outputDirectory");
 
         File outputHtml = new File(outputDir, "file-activity.html");
-
-        renderer(mojo, outputHtml);
 
         assertTrue(outputHtml.getAbsolutePath() + " not generated!", outputHtml.exists());
 

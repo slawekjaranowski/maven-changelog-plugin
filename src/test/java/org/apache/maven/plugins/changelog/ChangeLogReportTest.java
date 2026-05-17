@@ -22,6 +22,7 @@ import java.io.File;
 import java.nio.file.Files;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.apache.maven.plugins.changelog.stubs.FailedScmManagerStub;
 import org.apache.maven.plugins.changelog.stubs.ScmManagerStub;
 import org.apache.maven.plugins.changelog.stubs.ScmManagerWithHostStub;
@@ -31,7 +32,7 @@ import org.codehaus.plexus.util.FileUtils;
 /**
  * @author Edwin Punzalan
  */
-public class ChangeLogReportTest extends AbstractChangeLogReportTest {
+public class ChangeLogReportTest extends AbstractMojoTestCase {
     private ScmManager scmManager = new ScmManagerStub();
 
     public void testNoSource() throws Exception {
@@ -48,8 +49,6 @@ public class ChangeLogReportTest extends AbstractChangeLogReportTest {
         File outputDir = (File) getVariableValueFromObject(mojo, "outputDirectory");
 
         File outputHtml = new File(outputDir, "changelog.html");
-
-        renderer(mojo, outputHtml);
 
         assertTrue(outputHtml.getAbsolutePath() + " not generated!", outputHtml.exists());
 
@@ -201,8 +200,6 @@ public class ChangeLogReportTest extends AbstractChangeLogReportTest {
         File outputDir = (File) getVariableValueFromObject(mojo, "outputDirectory");
 
         File outputHtml = new File(outputDir, "changelog.html");
-
-        renderer(mojo, outputHtml);
 
         assertTrue(outputHtml.getAbsolutePath() + " not generated!", outputHtml.exists());
 
