@@ -19,67 +19,96 @@
 package org.apache.maven.plugins.changelog;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.maven.plugin.testing.AbstractMojoTestCase;
+import org.apache.maven.api.di.Provides;
+import org.apache.maven.api.plugin.testing.InjectMojo;
+import org.apache.maven.api.plugin.testing.MojoTest;
+import org.apache.maven.model.Developer;
+import org.apache.maven.plugins.changelog.stubs.MavenProjectStub;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
+import org.junit.jupiter.api.Test;
+
+import static org.apache.maven.api.plugin.testing.MojoExtension.getBasedir;
+import static org.apache.maven.api.plugin.testing.MojoExtension.getVariableValueFromObject;
+import static org.apache.maven.api.plugin.testing.MojoExtension.setVariableValueToObject;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Edwin Punzalan
  */
-public class DeveloperActivityReportTest extends AbstractMojoTestCase {
+@MojoTest
+public class DeveloperActivityReportTest {
 
-    public void testNoSource() throws Exception {
-        File pluginXmlFile = new File(getBasedir(), "src/test/plugin-configs/dev-activity/no-source-plugin-config.xml");
+    @Provides
+    @SuppressWarnings("unused")
+    MavenProject providesMavenProject() {
+        MavenProject mavenProject = new MavenProjectStub();
 
-        DeveloperActivityReport mojo = (DeveloperActivityReport) lookupMojo("dev-activity", pluginXmlFile);
+        List<Developer> developers = new ArrayList<>();
 
-        assertNotNull("Mojo found.", mojo);
+        Developer developer = new Developer();
+        developer.setName("Edwin Punzalan");
+        developer.setId("edwin");
+        developers.add(developer);
 
+        developer = new Developer();
+        developer.setName("Keogh Edrich Punzalan");
+        developer.setId("keogh");
+        developers.add(developer);
+
+        mavenProject.setDevelopers(developers);
+        return mavenProject;
+    }
+
+    @Test
+    @InjectMojo(goal = "dev-activity", pom = "src/test/plugin-configs/dev-activity/no-source-plugin-config.xml")
+    public void testNoSource(DeveloperActivityReport mojo) throws Exception {
         mojo.execute();
 
-        File outputDir = (File) getVariableValueFromObject(mojo, "outputDirectory");
+        File outputDir = getVariableValueFromObject(mojo, "outputDirectory");
 
         File outputHtml = new File(outputDir, "dev-activity.html");
 
-        assertTrue(outputHtml.getAbsolutePath() + " not generated!", outputHtml.exists());
+        assertTrue(outputHtml.exists(), outputHtml.getAbsolutePath() + " not generated!");
 
-        assertTrue(outputHtml.getAbsolutePath() + " is empty!", outputHtml.length() > 0);
+        assertTrue(outputHtml.length() > 0, outputHtml.getAbsolutePath() + " is empty!");
     }
 
-    public void testMinConfig() throws Exception {
+    @Test
+    @InjectMojo(goal = "dev-activity", pom = "src/test/plugin-configs/dev-activity/min-plugin-config.xml")
+    public void testMinConfig(DeveloperActivityReport mojo) throws Exception {
         File outputXML = new File(getBasedir(), "src/test/changelog-xml/min-changelog.xml");
 
         // force reuse of existing changelog cache
         outputXML.setLastModified(System.currentTimeMillis());
 
-        File pluginXmlFile = new File(getBasedir(), "src/test/plugin-configs/dev-activity/" + "min-plugin-config.xml");
-
-        DeveloperActivityReport mojo = (DeveloperActivityReport) lookupMojo("dev-activity", pluginXmlFile);
-
-        assertNotNull("Mojo found.", mojo);
+        // use current directory project as basedir
+        setVariableValueToObject(mojo, "basedir", new File(getBasedir(), "src/main/java"));
+        setVariableValueToObject(mojo, "outputXML", outputXML);
 
         mojo.execute();
 
-        File outputXML1 = (File) getVariableValueFromObject(mojo, "outputXML");
+        String encoding = getVariableValueFromObject(mojo, "outputEncoding");
 
-        String encoding = (String) getVariableValueFromObject(mojo, "outputEncoding");
+        assertTrue(outputXML.exists(), "Test if changelog.xml is created");
 
-        assertTrue("Test if changelog.xml is created", outputXML1.exists());
-
-        String changelogXml = FileUtils.fileRead(outputXML1);
+        String changelogXml = FileUtils.fileRead(outputXML);
 
         assertTrue(
-                "Test for xml header",
-                changelogXml.startsWith("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>"));
+                changelogXml.startsWith("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>"),
+                "Test for xml header");
 
-        assertTrue("Test for xml footer", changelogXml.endsWith("</changelog>"));
+        assertTrue(changelogXml.endsWith("</changelog>"), "Test for xml footer");
 
-        File outputDir = (File) getVariableValueFromObject(mojo, "outputDirectory");
+        File outputDir = getVariableValueFromObject(mojo, "outputDirectory");
 
         File outputHtml = new File(outputDir, "dev-activity.html");
 
-        assertTrue(outputHtml.getAbsolutePath() + " not generated!", outputHtml.exists());
+        assertTrue(outputHtml.exists(), outputHtml.getAbsolutePath() + " not generated!");
 
-        assertTrue(outputHtml.getAbsolutePath() + " is empty!", outputHtml.length() > 0);
+        assertTrue(outputHtml.length() > 0, outputHtml.getAbsolutePath() + " is empty!");
     }
 }
