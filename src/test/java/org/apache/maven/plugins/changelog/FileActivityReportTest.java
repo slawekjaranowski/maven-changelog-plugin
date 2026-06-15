@@ -41,7 +41,7 @@ public class FileActivityReportTest {
 
     @Provides
     @SuppressWarnings("unused")
-    MavenProject providesMavenProject() {
+    private MavenProject providesMavenProject() {
         return new MavenProjectStub();
     }
 

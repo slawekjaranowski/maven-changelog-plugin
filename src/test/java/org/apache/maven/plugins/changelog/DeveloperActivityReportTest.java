@@ -44,7 +44,7 @@ public class DeveloperActivityReportTest {
 
     @Provides
     @SuppressWarnings("unused")
-    MavenProject providesMavenProject() {
+    private MavenProject providesMavenProject() {
         MavenProject mavenProject = new MavenProjectStub();
 
         List<Developer> developers = new ArrayList<>();

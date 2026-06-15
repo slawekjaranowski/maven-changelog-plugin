@@ -21,6 +21,7 @@ package org.apache.maven.plugins.changelog.stubs;
 import java.io.File;
 
 import org.apache.maven.api.plugin.testing.MojoExtension;
+import org.apache.maven.model.Build;
 import org.apache.maven.model.Scm;
 import org.apache.maven.project.MavenProject;
 
@@ -53,5 +54,12 @@ public class MavenProjectStub extends MavenProject {
      */
     public File getBasedir() {
         return new File(MojoExtension.getBasedir(), "target/test-harness/" + testCounter);
+    }
+
+    @Override
+    public Build getBuild() {
+        Build build = super.getBuild();
+        build.setDirectory(new File(getBasedir(), "target").getAbsolutePath());
+        return build;
     }
 }
