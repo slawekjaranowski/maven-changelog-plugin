@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Edwin Punzalan
  */
 @MojoTest
-public class FileActivityReportTest {
+class FileActivityReportTest {
 
     @Provides
     @SuppressWarnings("unused")
@@ -47,7 +47,7 @@ public class FileActivityReportTest {
 
     @Test
     @InjectMojo(goal = "file-activity", pom = "src/test/plugin-configs/file-activity/no-source-plugin-config.xml")
-    public void testNoSource(FileActivityReport mojo) throws Exception {
+    void testNoSource(FileActivityReport mojo) throws Exception {
 
         mojo.execute();
 
@@ -62,7 +62,7 @@ public class FileActivityReportTest {
 
     @Test
     @InjectMojo(goal = "file-activity", pom = "src/test/plugin-configs/file-activity/min-plugin-config.xml")
-    public void testMinConfig(FileActivityReport mojo) throws Exception {
+    void testMinConfig(FileActivityReport mojo) throws Exception {
         File outputXML = new File(getBasedir(), "src/test/changelog-xml/min-changelog.xml");
 
         // force reuse of existing changelog cache
