@@ -56,9 +56,6 @@ class ChangeLogReportTest {
     }
 
     @Test
-    void name() {}
-
-    @Test
     @InjectMojo(goal = "changelog", pom = "src/test/plugin-configs/changelog/no-source-plugin-config.xml")
     void testNoSource(ChangeLogReport mojo) throws Exception {
         setVariableValueToObject(mojo, "manager", scmManager);
